@@ -1,7 +1,7 @@
-package job4j_auth.controller;
+package job4j.auth.controller;
 
-import job4j_auth.model.Person;
-import job4j_auth.service.PersonService;
+import job4j.auth.model.Person;
+import job4j.auth.service.PersonService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/person")
@@ -18,8 +19,8 @@ public class PersonController {
     private final PersonService personService;
 
     @GetMapping("/")
-    public List<Person> findAll()    {
-        return this.personService.finAll();
+    public List<Person> findAll() {
+        return this.personService.findAll();
     }
 
     @GetMapping("/{id}")
@@ -40,17 +41,22 @@ public class PersonController {
     }
 
     @PutMapping("/")
-    public ResponseEntity<Void> update(@RequestBody Person person) {
+    public ResponseEntity<Person> update(@RequestBody Person person) {
+        var update = this.personService.update(person);
         this.personService.save(person);
-        return ResponseEntity.ok().build();
+        return new ResponseEntity<>(update.orElse(new Person()),
+                update.isPresent() ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id) {
+    public ResponseEntity<Boolean> delete(@PathVariable int id) {
+        boolean rsl = personService.findByIdIfExists(id);
+        if (rsl) {
+            this.personService.delete(id);
+        }
         Person person = new Person();
         person.setId(id);
-        this.personService.delete(id);
-        return ResponseEntity.ok().build();
+        return new ResponseEntity<>(rsl, rsl ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 }
 

@@ -1,22 +1,28 @@
-package job4j_auth;
+package job4j.auth;
 
+import liquibase.integration.spring.SpringLiquibase;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.context.annotation.Bean;
+
+import javax.sql.DataSource;
 
 @SpringBootApplication
-@EntityScan("job4j_auth.model")
-@EnableJpaRepositories("job4j_auth.repository")
-@ComponentScan({"job4j_auth.service", "job4j_auth.controller"})
 public class Job4jAuthApplication extends SpringBootServletInitializer {
 
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
 		return application.sources(Job4jAuthApplication.class);
+	}
+
+	@Bean
+	public SpringLiquibase liquibase(DataSource ds) {
+		SpringLiquibase springLiquibase = new SpringLiquibase();
+		springLiquibase.setChangeLog("db/changelog/liquibase-changeLog.xml");
+		springLiquibase.setDataSource(ds);
+		return springLiquibase;
 	}
 
 	public static void main(String[] args) {

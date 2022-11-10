@@ -1,7 +1,7 @@
-package job4j_auth.service;
+package job4j.auth.service;
 
-import job4j_auth.model.Person;
-import job4j_auth.repository.PersonRepository;
+import job4j.auth.model.Person;
+import job4j.auth.repository.PersonRepository;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,12 +15,16 @@ public class PersonService {
 
     private final PersonRepository personRepository;
 
-    public List<Person> finAll() {
-        return (List<Person>) personRepository.findAll();
+    public List<Person> findAll() {
+        return personRepository.findAll();
     }
 
     public Optional<Person> findById(int id) {
         return personRepository.findById(id);
+    }
+
+    public Optional<Person> update(Person person) {
+        return personRepository.update(person);
     }
 
     public Person save(Person person) {
@@ -29,5 +33,9 @@ public class PersonService {
 
     public void delete(int id) {
         personRepository.deleteById(id);
+    }
+
+    public boolean findByIdIfExists(int id) {
+        return personRepository.existsById(id);
     }
 }

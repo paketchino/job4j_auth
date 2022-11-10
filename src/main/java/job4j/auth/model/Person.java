@@ -1,4 +1,4 @@
-package job4j_auth.model;
+package job4j.auth.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
